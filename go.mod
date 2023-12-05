@@ -1,6 +1,6 @@
 module github.com/itishrishikesh/gofeed
 
-go 1.21.1
+go 1.23
 
 require github.com/joho/godotenv v1.5.1
 
