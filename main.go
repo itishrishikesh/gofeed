@@ -21,16 +21,7 @@ func main() {
 
 	router := chi.NewRouter()
 
-	server := &http.Server{
-		Handler: router,
-		Addr:    ":" + portNumber,
-	}
-
 	log.Println("I#1OLYVV - Server starting on port number", portNumber)
-
-	v1Router := chi.NewRouter()
-	v1Router.Get("/healthz", handlerReadiness)
-	v1Router.Mount("/v1", router)
 
 	router.Use(cors.Handler(cors.Options{
 		AllowedOrigins:   []string{"https://*", "http://*"},
@@ -40,6 +31,16 @@ func main() {
 		AllowCredentials: false,
 		MaxAge:           300,
 	}))
+
+	v1Router := chi.NewRouter()
+	v1Router.Get("/healthz", healthCheckHandler)
+	v1Router.Get("/err", errorHandler)
+	router.Mount("/v1", v1Router)
+
+	server := &http.Server{
+		Handler: router,
+		Addr:    ":" + portNumber,
+	}
 
 	err := server.ListenAndServe()
 

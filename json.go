@@ -9,6 +9,7 @@ import (
 )
 
 func respondWithJSON(writer http.ResponseWriter, code int, payload interface{}) {
+	log.Println("I#1ONRD6 - Trying to respond with json payload", payload)
 	data, err := json.Marshal(payload)
 	if err != nil {
 		log.Fatalln("E#1OLY17 - failed to marshal JSON response", payload, err)
@@ -17,4 +18,15 @@ func respondWithJSON(writer http.ResponseWriter, code int, payload interface{}) 
 	writer.Header().Add(constants.CONTENT_TYPE, constants.APPLICATION_JSON)
 	writer.WriteHeader(code)
 	writer.Write(data)
+}
+
+func respondWithError(writer http.ResponseWriter, code int, msg string) {
+	if code > 499 {
+		log.Println("I#1ONRP0 - Responding with 5XX error", msg)
+	}
+	type errResponse struct {
+		Error string `json:"error"`
+	}
+
+	respondWithJSON(writer, code, errResponse{Error: msg})
 }
