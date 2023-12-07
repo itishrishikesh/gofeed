@@ -1,9 +1,105 @@
+# github.com/andybalholm/brotli v1.0.5
+## explicit; go 1.12
+github.com/andybalholm/brotli
+# github.com/gertd/go-pluralize v0.2.1
+## explicit; go 1.17
+github.com/gertd/go-pluralize
 # github.com/go-chi/chi v1.5.5
 ## explicit; go 1.16
 github.com/go-chi/chi
 # github.com/go-chi/cors v1.2.1
 ## explicit; go 1.14
 github.com/go-chi/cors
+# github.com/jackc/pgpassfile v1.0.0
+## explicit; go 1.12
+github.com/jackc/pgpassfile
+# github.com/jackc/pgservicefile v0.0.0-20221227161230-091c0ba34f0a
+## explicit; go 1.14
+github.com/jackc/pgservicefile
+# github.com/jackc/pgx/v5 v5.4.3
+## explicit; go 1.19
+github.com/jackc/pgx/v5
+github.com/jackc/pgx/v5/internal/anynil
+github.com/jackc/pgx/v5/internal/iobufpool
+github.com/jackc/pgx/v5/internal/pgio
+github.com/jackc/pgx/v5/internal/sanitize
+github.com/jackc/pgx/v5/internal/stmtcache
+github.com/jackc/pgx/v5/pgconn
+github.com/jackc/pgx/v5/pgconn/internal/bgreader
+github.com/jackc/pgx/v5/pgconn/internal/ctxwatch
+github.com/jackc/pgx/v5/pgproto3
+github.com/jackc/pgx/v5/pgtype
+github.com/jackc/pgx/v5/pgxpool
+github.com/jackc/pgx/v5/stdlib
+# github.com/jackc/puddle/v2 v2.2.1
+## explicit; go 1.19
+github.com/jackc/puddle/v2
+github.com/jackc/puddle/v2/internal/genstack
+# github.com/jmoiron/sqlx v1.3.5
+## explicit; go 1.10
+github.com/jmoiron/sqlx
+github.com/jmoiron/sqlx/reflectx
 # github.com/joho/godotenv v1.5.1
 ## explicit; go 1.12
 github.com/joho/godotenv
+# github.com/klauspost/compress v1.17.0
+## explicit; go 1.18
+github.com/klauspost/compress/flate
+github.com/klauspost/compress/gzip
+github.com/klauspost/compress/zlib
+# github.com/lib/pq v1.10.9
+## explicit; go 1.13
+github.com/lib/pq
+github.com/lib/pq/oid
+github.com/lib/pq/scram
+# github.com/techrail/bark v1.1.0
+## explicit; go 1.20
+github.com/techrail/bark/appRuntime
+github.com/techrail/bark/channels
+github.com/techrail/bark/client
+github.com/techrail/bark/constants
+github.com/techrail/bark/models
+github.com/techrail/bark/resources
+github.com/techrail/bark/services/dbLogWriter
+github.com/techrail/bark/services/ingestion
+github.com/techrail/bark/typs/appError
+github.com/techrail/bark/typs/jsonObject
+github.com/techrail/bark/utils
+# github.com/techrail/ground v0.0.0-20231205083440-5cc2e8cc24d6
+## explicit; go 1.21
+github.com/techrail/ground/constants
+github.com/techrail/ground/constants/customCtxKey
+github.com/techrail/ground/constants/errCode
+github.com/techrail/ground/dbCodegen
+github.com/techrail/ground/logger
+github.com/techrail/ground/typs/appError
+github.com/techrail/ground/typs/integer
+# github.com/valyala/bytebufferpool v1.0.0
+## explicit
+github.com/valyala/bytebufferpool
+# github.com/valyala/fasthttp v1.50.0
+## explicit; go 1.20
+github.com/valyala/fasthttp
+github.com/valyala/fasthttp/fasthttputil
+github.com/valyala/fasthttp/stackless
+# golang.org/x/crypto v0.13.0
+## explicit; go 1.17
+golang.org/x/crypto/pbkdf2
+# golang.org/x/sync v0.3.0
+## explicit; go 1.17
+golang.org/x/sync/semaphore
+# golang.org/x/text v0.13.0
+## explicit; go 1.17
+golang.org/x/text/cases
+golang.org/x/text/internal
+golang.org/x/text/internal/language
+golang.org/x/text/internal/language/compact
+golang.org/x/text/internal/tag
+golang.org/x/text/language
+golang.org/x/text/runes
+golang.org/x/text/secure/bidirule
+golang.org/x/text/secure/precis
+golang.org/x/text/transform
+golang.org/x/text/unicode/bidi
+golang.org/x/text/unicode/norm
+golang.org/x/text/width
