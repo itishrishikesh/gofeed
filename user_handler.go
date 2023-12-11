@@ -44,3 +44,17 @@ func (apiCfg *apiConfig) createUserHandler(writer http.ResponseWriter, request *
 func (apiCfg *apiConfig) getUserHandler(writer http.ResponseWriter, request *http.Request, user database.User) {
 	respondWithJSON(writer, constants.HTTP_SUCCESS, user)
 }
+
+func (config *apiConfig) getPostsForUserHandler(writer http.ResponseWriter, request *http.Request, user database.User) {
+	posts, err := config.DB.GetPostsForUser(request.Context(), database.GetPostsForUserParams{
+		UserID: user.ID,
+		Limit:  10,
+	})
+	if err != nil {
+		respondWithError(writer, constants.HTTP_ERROR, "Couldn't get posts")
+		log.Println(fmt.Sprintf("E#1OWWJW - Couldn't get posts %v", err))
+		return
+	}
+
+	respondWithJSON(writer, constants.HTTP_SUCCESS, databasePostsToPosts(posts))
+}

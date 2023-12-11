@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/go-chi/chi"
 	"github.com/google/uuid"
 	"github.com/itishrishikesh/gofeed/constants"
 	"github.com/itishrishikesh/gofeed/internal/database"
@@ -74,4 +75,31 @@ func (config *apiConfig) createFeedFollowHandler(writer http.ResponseWriter, req
 		return
 	}
 	respondWithJSON(writer, constants.HTTP_CREATED, databaseFeedFollowToFeedFollow(feedFollow))
+}
+
+func (config *apiConfig) getFeedFollowsHandler(writer http.ResponseWriter, request *http.Request, user database.User) {
+	feedFollows, err := config.DB.GetFeedFollows(request.Context(), user.ID)
+	if err != nil {
+		respondWithError(writer, constants.HTTP_BAD_REQUEST, fmt.Sprintf("E#1OWRVV - Couldn't get feed follows %v", err))
+		return
+	}
+	respondWithJSON(writer, constants.HTTP_CREATED, databaseFeedFollowToFeedFollows(feedFollows))
+}
+
+func (config *apiConfig) deleteFeedHandler(writer http.ResponseWriter, request *http.Request, user database.User) {
+	feedFollowId := chi.URLParam(request, "feedFollowId")
+	feedFollowUUID, err := uuid.Parse(feedFollowId)
+	if err != nil {
+		respondWithError(writer, constants.HTTP_BAD_REQUEST, fmt.Sprintf("E#1OWSD0 - Feed follow ID isn't correct %v", err))
+		return
+	}
+	err = config.DB.DeleteFeedFollow(request.Context(), database.DeleteFeedFollowParams{
+		ID:     feedFollowUUID,
+		UserID: user.ID,
+	})
+	if err != nil {
+		respondWithError(writer, constants.HTTP_BAD_REQUEST, fmt.Sprintf("E#1OWSG3 - Couldn't delete feed follow %v", err))
+		return
+	}
+	respondWithJSON(writer, constants.HTTP_SUCCESS, struct{}{})
 }
