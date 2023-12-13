@@ -1,0 +1,28 @@
+services:
+  gofeed:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 8080:80
+    depends_on:
+      - goose
+    environment:
+      - GO_FEED_DB_URL=postgres://gofeed:gofeed@postgres:5432/gofeed?sslmode=disable
+      - PORT=8080
+  postgres:
+    image: postgres:15.4
+    restart: always
+    environment:
+      - POSTGRES_USER=gofeed
+      - POSTGRES_PASSWORD=gofeed
+      - POSTGRES_DB=gofeed
+    ports:
+      - "15432:5432"
+    volumes:
+      - /sql/.nocode
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d gofeed -U gofeed"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
