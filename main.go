@@ -27,7 +27,7 @@ func main() {
 		log.Fatal("E#1OLYW6 - PORT is not found in the env variables")
 	}
 
-	dbUrl := os.Getenv("DB_URL")
+	dbUrl := os.Getenv("GO_FEED_DB_URL")
 	if dbUrl == "" {
 		log.Fatal("E#1ORGYA - DB_URL is not found in the env variables")
 	}
