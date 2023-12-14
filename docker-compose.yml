@@ -4,7 +4,7 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - 8080:80
+      - 80:8080
     depends_on:
       - goose
     environment:
@@ -26,3 +26,11 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+  goose:
+    image: gomicro/goose
+    volumes:
+      - ./sql/schema:/migrations
+    depends_on:
+      postgres:
+        condition: service_healthy
+    command: goose -dir=/migrations postgres "postgres://gofeed:gofeed@postgres:5432/gofeed?sslmode=disable" up
