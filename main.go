@@ -9,15 +9,14 @@ import (
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/cors"
+	"github.com/itishrishikesh/gofeed/controller"
 	"github.com/itishrishikesh/gofeed/internal/database"
+	"github.com/itishrishikesh/gofeed/middleware"
+	"github.com/itishrishikesh/gofeed/utils"
 	"github.com/joho/godotenv"
 
 	_ "github.com/lib/pq"
 )
-
-type apiConfig struct {
-	DB *database.Queries
-}
 
 func main() {
 	godotenv.Load()
@@ -39,11 +38,11 @@ func main() {
 
 	db := database.New(conn)
 
-	apiCfg := apiConfig{
+	apiCfg := middleware.ApiConfig{
 		DB: db,
 	}
 
-	go startScraping(db, 10, time.Minute)
+	go utils.StartScraping(db, 10, time.Minute)
 
 	router := chi.NewRouter()
 
@@ -58,17 +57,21 @@ func main() {
 		MaxAge:           300,
 	}))
 
+	config := controller.ApiConfig{
+		DB: db,
+	}
+
 	v1Router := chi.NewRouter()
-	v1Router.Get("/healthz", healthCheckHandler)
-	v1Router.Get("/err", errorHandler)
-	v1Router.Post("/users", apiCfg.createUserHandler)
-	v1Router.Get("/users", apiCfg.authMiddleware(apiCfg.getUserHandler))
-	v1Router.Post("/feeds", apiCfg.authMiddleware(apiCfg.createFeedHandler))
-	v1Router.Get("/feeds", apiCfg.getFeedsHandler)
-	v1Router.Post("/feedfollow", apiCfg.authMiddleware(apiCfg.createFeedFollowHandler))
-	v1Router.Get("/feedfollow", apiCfg.authMiddleware(apiCfg.getFeedFollowsHandler))
-	v1Router.Delete("/feedfollow/{feedFollowId}", apiCfg.authMiddleware(apiCfg.deleteFeedHandler))
-	v1Router.Get("/posts", apiCfg.authMiddleware(apiCfg.getPostsForUserHandler))
+	v1Router.Get("/healthz", controller.HealthCheckHandler)
+	v1Router.Get("/err", controller.ErrorHandler)
+	v1Router.Post("/users", config.CreateUserHandler)
+	v1Router.Get("/users", apiCfg.AuthMiddleware(config.GetUserHandler))
+	v1Router.Post("/feeds", apiCfg.AuthMiddleware(config.CreateFeedHandler))
+	v1Router.Get("/feeds", config.GetFeedsHandler)
+	v1Router.Post("/feedfollow", apiCfg.AuthMiddleware(config.CreateFeedFollowHandler))
+	v1Router.Get("/feedfollow", apiCfg.AuthMiddleware(config.GetFeedFollowsHandler))
+	v1Router.Delete("/feedfollow/{feedFollowId}", apiCfg.AuthMiddleware(config.DeleteFeedHandler))
+	v1Router.Get("/posts", apiCfg.AuthMiddleware(config.GetPostsForUserHandler))
 	router.Mount("/v1", v1Router)
 
 	server := &http.Server{

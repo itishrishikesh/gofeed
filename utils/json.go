@@ -1,4 +1,4 @@
-package main
+package utils
 
 import (
 	"encoding/json"
@@ -8,7 +8,7 @@ import (
 	"github.com/itishrishikesh/gofeed/constants"
 )
 
-func respondWithJSON(writer http.ResponseWriter, code int, payload interface{}) {
+func RespondWithJSON(writer http.ResponseWriter, code int, payload interface{}) {
 	log.Println("I#1ONRD6 - Trying to respond with json payload", payload)
 	data, err := json.Marshal(payload)
 	if err != nil {
@@ -20,7 +20,7 @@ func respondWithJSON(writer http.ResponseWriter, code int, payload interface{}) 
 	writer.Write(data)
 }
 
-func respondWithError(writer http.ResponseWriter, code int, msg string) {
+func RespondWithError(writer http.ResponseWriter, code int, msg string) {
 	if code > 499 {
 		log.Println("I#1ONRP0 - Responding with 5XX error", msg)
 	}
@@ -28,5 +28,5 @@ func respondWithError(writer http.ResponseWriter, code int, msg string) {
 		Error string `json:"error"`
 	}
 
-	respondWithJSON(writer, code, errResponse{Error: msg})
+	RespondWithJSON(writer, code, errResponse{Error: msg})
 }
