@@ -14,13 +14,10 @@ import (
 	"github.com/itishrishikesh/gofeed/utils"
 )
 
-type ApiConfig struct {
-	DB *database.Queries
-}
-
 func (apiCfg *ApiConfig) CreateUserHandler(writer http.ResponseWriter, request *http.Request) {
 	type parameters struct {
-		Name string `json:"name"`
+		Username string `json:"username"`
+		Password string `json:"password"`
 	}
 
 	params := parameters{}
@@ -36,7 +33,7 @@ func (apiCfg *ApiConfig) CreateUserHandler(writer http.ResponseWriter, request *
 		ID:        uuid.New(),
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
-		Name:      params.Name,
+		Name:      params.Username,
 	})
 	if err != nil {
 		utils.RespondWithError(writer, constants.HTTP_ERROR, "Couldn't create user")
