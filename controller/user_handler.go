@@ -34,6 +34,7 @@ func (apiCfg *ApiConfig) CreateUserHandler(writer http.ResponseWriter, request *
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 		Name:      params.Username,
+		Password:  params.Password,
 	})
 	if err != nil {
 		utils.RespondWithError(writer, constants.HTTP_ERROR, "Couldn't create user")
