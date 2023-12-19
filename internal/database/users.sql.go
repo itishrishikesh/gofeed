@@ -7,15 +7,16 @@ package database
 
 import (
 	"context"
+	"database/sql"
 	"time"
 
 	"github.com/google/uuid"
 )
 
 const createUser = `-- name: CreateUser :one
-INSERT INTO users (id, created_at, updated_at, name, api_key)
-VALUES ($1, $2, $3, $4, encode(sha256(random()::text::bytea), 'hex'))
-RETURNING id, created_at, updated_at, name, api_key
+INSERT INTO users (id, created_at, updated_at, name, password, api_key)
+VALUES ($1, $2, $3, $4, $5, encode(sha256(random()::text::bytea), 'hex'))
+RETURNING id, created_at, updated_at, name, api_key, password
 `
 
 type CreateUserParams struct {
@@ -23,6 +24,7 @@ type CreateUserParams struct {
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	Name      string
+	Password  sql.NullString
 }
 
 func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, error) {
@@ -31,6 +33,7 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 		arg.CreatedAt,
 		arg.UpdatedAt,
 		arg.Name,
+		arg.Password,
 	)
 	var i User
 	err := row.Scan(
@@ -39,12 +42,13 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 		&i.UpdatedAt,
 		&i.Name,
 		&i.ApiKey,
+		&i.Password,
 	)
 	return i, err
 }
 
 const getUserByAPIKey = `-- name: GetUserByAPIKey :one
-SELECT id, created_at, updated_at, name, api_key FROM users WHERE api_key = $1
+SELECT id, created_at, updated_at, name, api_key, password FROM users WHERE api_key = $1
 `
 
 func (q *Queries) GetUserByAPIKey(ctx context.Context, apiKey string) (User, error) {
@@ -56,6 +60,28 @@ func (q *Queries) GetUserByAPIKey(ctx context.Context, apiKey string) (User, err
 		&i.UpdatedAt,
 		&i.Name,
 		&i.ApiKey,
+		&i.Password,
+	)
+	return i, err
+}
+
+const updateAPIKey = `-- name: UpdateAPIKey :one
+UPDATE users 
+SET api_key = encode(sha256(random()::text::bytea), 'hex') 
+WHERE id = $1
+RETURNING id, created_at, updated_at, name, api_key, password
+`
+
+func (q *Queries) UpdateAPIKey(ctx context.Context, id uuid.UUID) (User, error) {
+	row := q.db.QueryRowContext(ctx, updateAPIKey, id)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.Name,
+		&i.ApiKey,
+		&i.Password,
 	)
 	return i, err
 }
