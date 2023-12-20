@@ -12,6 +12,7 @@ import (
 	"github.com/itishrishikesh/gofeed/internal/database"
 	"github.com/itishrishikesh/gofeed/models"
 	"github.com/itishrishikesh/gofeed/utils"
+	"golang.org/x/crypto/bcrypt"
 )
 
 func (apiCfg *ApiConfig) CreateUserHandler(writer http.ResponseWriter, request *http.Request) {
@@ -19,13 +20,19 @@ func (apiCfg *ApiConfig) CreateUserHandler(writer http.ResponseWriter, request *
 		Username string `json:"username"`
 		Password string `json:"password"`
 	}
-
 	params := parameters{}
 	decoder := json.NewDecoder(request.Body)
 	err := decoder.Decode(&params)
 	if err != nil {
 		utils.RespondWithError(writer, constants.HTTP_BAD_REQUEST, "Error parsing JSON")
-		log.Println("D#1ORHXO - User passed incorrect JSON")
+		log.Println("E#1PDKJ2 - User passed incorrect JSON")
+		return
+	}
+
+	hash, err := bcrypt.GenerateFromPassword([]byte(params.Password), bcrypt.MinCost)
+	if err != nil {
+		utils.RespondWithError(writer, constants.HTTP_BAD_REQUEST, "Error parsing password")
+		log.Println("E#1PDKIV - Please check your password string")
 		return
 	}
 
@@ -34,6 +41,7 @@ func (apiCfg *ApiConfig) CreateUserHandler(writer http.ResponseWriter, request *
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 		Name:      params.Username,
+		Password:  string(hash),
 	})
 	if err != nil {
 		utils.RespondWithError(writer, constants.HTTP_ERROR, "Couldn't create user")
