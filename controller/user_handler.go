@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -8,6 +9,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/itishrishikesh/gofeed/auth"
 	"github.com/itishrishikesh/gofeed/constants"
 	"github.com/itishrishikesh/gofeed/internal/database"
 	"github.com/itishrishikesh/gofeed/models"
@@ -68,4 +70,42 @@ func (config *ApiConfig) GetPostsForUserHandler(writer http.ResponseWriter, requ
 	}
 
 	utils.RespondWithJSON(writer, constants.HTTP_SUCCESS, models.DatabasePostsToPosts(posts))
+}
+
+func (config *ApiConfig) TokenHandler(writer http.ResponseWriter, request *http.Request) {
+	type parameters struct {
+		Username string `json:"username"`
+		Password string `json:"password"`
+	}
+	params := parameters{}
+	decoder := json.NewDecoder(request.Body)
+	err := decoder.Decode(&params)
+	if err != nil {
+		utils.RespondWithError(writer, constants.HTTP_BAD_REQUEST, "Error parsing JSON")
+		log.Println("E#1PFLY0 - Something's wrong with token", err)
+		return
+	}
+	user, err := config.DB.GetUserByUsernameAndPassword(context.Background(), database.GetUserByUsernameAndPasswordParams{
+		Name:     params.Username,
+		Password: params.Password,
+	})
+	log.Println("D#1PFMM0 - Received user is", user)
+	if err != nil {
+		utils.RespondWithError(writer, constants.HTTP_BAD_REQUEST, "Invalid Username and Password")
+		log.Println("E#1PFM6A - Invalid Username and Password", err)
+		return
+	}
+	token, err := auth.GenerateJWT(user.Name)
+	if err != nil {
+		utils.RespondWithError(writer, constants.HTTP_ERROR, "Error while generating token")
+		log.Println(fmt.Sprintf("E#1PFKYV - Error while generating JWT Token %v", err))
+		return
+	}
+	type returnToken struct {
+		Token string `json:"token"`
+	}
+	payload := returnToken{
+		Token: token,
+	}
+	utils.RespondWithJSON(writer, constants.HTTP_SUCCESS, payload)
 }

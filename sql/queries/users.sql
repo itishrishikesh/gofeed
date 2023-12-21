@@ -11,3 +11,9 @@ UPDATE users
 SET api_key = encode(sha256(random()::text::bytea), 'hex') 
 WHERE id = $1
 RETURNING *;
+
+-- name: GetUserByUsernameAndPassword :one
+SELECT * FROM users WHERE name = $1 AND password = $2;
+
+-- name: GetUserByUsername :one
+SELECT * FROM users WHERE name = $1;
