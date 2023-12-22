@@ -5,14 +5,12 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"time"
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/cors"
 	"github.com/itishrishikesh/gofeed/controller"
 	"github.com/itishrishikesh/gofeed/internal/database"
 	"github.com/itishrishikesh/gofeed/middleware"
-	"github.com/itishrishikesh/gofeed/utils"
 	"github.com/joho/godotenv"
 
 	_ "github.com/lib/pq"
@@ -42,7 +40,7 @@ func main() {
 		DB: db,
 	}
 
-	go utils.StartScraping(db, 10, time.Minute)
+	// go utils.StartScraping(db, 10, time.Minute)
 
 	router := chi.NewRouter()
 
@@ -72,6 +70,7 @@ func main() {
 	v1Router.Get("/feedfollow", apiCfg.AuthMiddleware(config.GetFeedFollowsHandler))
 	v1Router.Delete("/feedfollow/{feedFollowId}", apiCfg.AuthMiddleware(config.DeleteFeedHandler))
 	v1Router.Get("/posts", apiCfg.AuthMiddleware(config.GetPostsForUserHandler))
+	v1Router.Post("/token", config.TokenHandler)
 	router.Mount("/v1", v1Router)
 
 	server := &http.Server{

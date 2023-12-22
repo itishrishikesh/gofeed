@@ -64,6 +64,47 @@ func (q *Queries) GetUserByAPIKey(ctx context.Context, apiKey string) (User, err
 	return i, err
 }
 
+const getUserByUsername = `-- name: GetUserByUsername :one
+SELECT id, created_at, updated_at, name, api_key, password FROM users WHERE name = $1
+`
+
+func (q *Queries) GetUserByUsername(ctx context.Context, name string) (User, error) {
+	row := q.db.QueryRowContext(ctx, getUserByUsername, name)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.Name,
+		&i.ApiKey,
+		&i.Password,
+	)
+	return i, err
+}
+
+const getUserByUsernameAndPassword = `-- name: GetUserByUsernameAndPassword :one
+SELECT id, created_at, updated_at, name, api_key, password FROM users WHERE name = $1 AND password = $2
+`
+
+type GetUserByUsernameAndPasswordParams struct {
+	Name     string
+	Password string
+}
+
+func (q *Queries) GetUserByUsernameAndPassword(ctx context.Context, arg GetUserByUsernameAndPasswordParams) (User, error) {
+	row := q.db.QueryRowContext(ctx, getUserByUsernameAndPassword, arg.Name, arg.Password)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.Name,
+		&i.ApiKey,
+		&i.Password,
+	)
+	return i, err
+}
+
 const updateAPIKey = `-- name: UpdateAPIKey :one
 UPDATE users 
 SET api_key = encode(sha256(random()::text::bytea), 'hex') 
