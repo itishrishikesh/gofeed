@@ -38,7 +38,7 @@ func (config *ApiConfig) AuthMiddleware(handler authHeader) http.HandlerFunc {
 			}
 		} else {
 			// This check will happen if user hasn't provided a valid token.
-			// Here we check if the user has provided an ApiKey
+			// And if the user has provided an ApiKey
 			user, err = config.DB.GetUserByAPIKey(request.Context(), apiKeyOrToken)
 			if err != nil {
 				utils.RespondWithError(writer, constants.HTTP_BAD_REQUEST, "E#1OV44M - Couldn't authenticate User!")
