@@ -1,3 +1,8 @@
+[![Go](https://img.shields.io/badge/Go-00ADD8?style=for-the-badge&logo=go&logoColor=white)](https://golang.org/)
+[![Postgres](https://img.shields.io/badge/Postgres-336791?style=for-the-badge&logo=postgresql&logoColor=white)](https://www.postgresql.org/)
+[![sqlc](https://img.shields.io/badge/sqlc-Generate%20type--safe%20code%20from%20SQL-blue?style=for-the-badge&logo=sql)](^2^)
+[![goose](https://img.shields.io/badge/goose-A%20database%20migration%20tool-green?style=for-the-badge&logo=go)](^1^)
+
 # GoFeed: A RSS Feed Aggregator Backend
 
 GoFeed is a simple and powerful backend for aggregating RSS feeds. It allows you to register users, follow RSS feeds, and read them in one place.
