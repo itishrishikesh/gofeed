@@ -46,11 +46,11 @@ func (apiCfg *ApiConfig) CreateUserHandler(writer http.ResponseWriter, request *
 	utils.RespondWithJSON(writer, constants.HTTP_SUCCESS, models.DatabaseUserToUser(user))
 }
 
-func (apiCfg *ApiConfig) GetUserHandler(writer http.ResponseWriter, request *http.Request, user database.User) {
+func (apiCfg *ApiConfig) GetUserHandler(writer http.ResponseWriter, request *http.Request, user models.User) {
 	utils.RespondWithJSON(writer, constants.HTTP_SUCCESS, user)
 }
 
-func (config *ApiConfig) GetPostsForUserHandler(writer http.ResponseWriter, request *http.Request, user database.User) {
+func (config *ApiConfig) GetPostsForUserHandler(writer http.ResponseWriter, request *http.Request, user models.User) {
 	posts, err := config.DB.GetPostsForUser(request.Context(), database.GetPostsForUserParams{
 		UserID: user.ID,
 		Limit:  10,

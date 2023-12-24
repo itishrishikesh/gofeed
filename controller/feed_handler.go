@@ -15,7 +15,7 @@ import (
 	"github.com/itishrishikesh/gofeed/utils"
 )
 
-func (apiCfg *ApiConfig) CreateFeedHandler(writer http.ResponseWriter, request *http.Request, user database.User) {
+func (apiCfg *ApiConfig) CreateFeedHandler(writer http.ResponseWriter, request *http.Request, user models.User) {
 	type parameters struct {
 		Name string `json:"name"`
 		URL  string `json:"url"`
@@ -53,7 +53,7 @@ func (config *ApiConfig) GetFeedsHandler(writer http.ResponseWriter, request *ht
 	utils.RespondWithJSON(writer, constants.HTTP_CREATED, models.DatabaseFeedToFeeds(feeds))
 }
 
-func (config *ApiConfig) CreateFeedFollowHandler(writer http.ResponseWriter, request *http.Request, user database.User) {
+func (config *ApiConfig) CreateFeedFollowHandler(writer http.ResponseWriter, request *http.Request, user models.User) {
 	type parameters struct {
 		FeedID uuid.UUID `json:"feed_id"`
 	}
@@ -79,7 +79,7 @@ func (config *ApiConfig) CreateFeedFollowHandler(writer http.ResponseWriter, req
 	utils.RespondWithJSON(writer, constants.HTTP_CREATED, models.DatabaseFeedFollowToFeedFollow(feedFollow))
 }
 
-func (config *ApiConfig) GetFeedFollowsHandler(writer http.ResponseWriter, request *http.Request, user database.User) {
+func (config *ApiConfig) GetFeedFollowsHandler(writer http.ResponseWriter, request *http.Request, user models.User) {
 	feedFollows, err := config.DB.GetFeedFollows(request.Context(), user.ID)
 	if err != nil {
 		utils.RespondWithError(writer, constants.HTTP_BAD_REQUEST, fmt.Sprintf("E#1OWRVV - Couldn't get feed follows %v", err))
@@ -88,7 +88,7 @@ func (config *ApiConfig) GetFeedFollowsHandler(writer http.ResponseWriter, reque
 	utils.RespondWithJSON(writer, constants.HTTP_CREATED, models.DatabaseFeedFollowToFeedFollows(feedFollows))
 }
 
-func (config *ApiConfig) DeleteFeedHandler(writer http.ResponseWriter, request *http.Request, user database.User) {
+func (config *ApiConfig) DeleteFeedHandler(writer http.ResponseWriter, request *http.Request, user models.User) {
 	feedFollowId := chi.URLParam(request, "feedFollowId")
 	feedFollowUUID, err := uuid.Parse(feedFollowId)
 	if err != nil {
