@@ -11,13 +11,11 @@ import (
 var Key string = "dadsgfjahg2131623879shdgrfahjdajhgfjafajhsdgfajhgdfjasghf"
 
 func GenerateJWT(username string) (string, error) {
-	token := jwt.New(jwt.SigningMethodHS256)
-	claims := token.Claims.(jwt.MapClaims)
-	log.Println("Time when JWT token was generated", time.Now().Add(10000*time.Minute).String())
-	claims["exp"] = time.Now().Add(10000 * time.Minute)
-	claims["authorized"] = true
-	claims["user"] = username
-	token.Header["exp"] = time.Now().Add(10000 * time.Minute)
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+		"authorized": true,
+		"user":       username,
+		"exp":        time.Now().Add(10 * time.Minute).Unix(),
+	})
 	tokenString, err := token.SignedString([]byte(Key))
 	if err != nil {
 		log.Println("E#1PBTIY - Failed to Generate JWT Token", err)
@@ -27,7 +25,6 @@ func GenerateJWT(username string) (string, error) {
 }
 
 func VerifyToken(tokenString string) *jwt.Token {
-	log.Println("Time when JWT token was being verified", time.Now())
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
